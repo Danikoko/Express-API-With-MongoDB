@@ -40,6 +40,20 @@ app.get('/blog', (req, res) => {
     );
 });
 
+// Create a new product
+app.post('/products', async (req, res) => {
+    try {
+        const product = await Product.create(req.body);
+        res.status(200).json(product);
+
+    } catch (ERROR) {
+        console.log(ERROR.message);
+        res.status(500).json({
+            message: ERROR.message
+        });
+    }
+});
+
 // Fetch all products
 app.get('/products', async (req, res) => {
     try {
@@ -84,14 +98,18 @@ app.patch('/products/:id', async (req, res) => {
     }
 });
 
-// Create a new product
-app.post('/products', async (req, res) => {
+// Delete a product by ID
+app.delete('/products/:id', async (req, res) => {
     try {
-        const product = await Product.create(req.body);
+        const { id }  = req.params;
+        const product = await Product.findByIdAndDelete(id);
+        if (!product) {
+            return res.status(404).json({
+                message: `Cannot find any product with ID ${id}`
+            });
+        }
         res.status(200).json(product);
-
     } catch (ERROR) {
-        console.log(ERROR.message);
         res.status(500).json({
             message: ERROR.message
         });
