@@ -11,6 +11,12 @@ const Product = require('./models/productModel');
 app.use(express.json());
 /** Indicate Express app can accept JSON */
 
+/** Indicate Express app can accept form data */
+app.use(express.urlencoded({
+    extended: false
+}));
+/** Indicate Express app can accept form data */
+
 /** Routes */
 app.get('/', (req, res) => {
     res.send([{name: 'Daniel'}, {name: 'Koko'}]);
@@ -34,6 +40,7 @@ app.get('/blog', (req, res) => {
     );
 });
 
+// Fetch all products
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find({});
@@ -45,6 +52,7 @@ app.get('/products', async (req, res) => {
     }
 });
 
+// Fetch a product by ID
 app.get('/products/:id', async (req, res) => {
     try {
         const { id }  = req.params;
@@ -57,6 +65,26 @@ app.get('/products/:id', async (req, res) => {
     }
 });
 
+// Update a product
+app.patch('/products/:id', async (req, res) => {
+    try {
+        const { id }  = req.params;
+        const product = await Product.findByIdAndUpdate(id, req.body);
+        if (!product) {
+            return res.status(404).json({
+                message: `Cannot find any product with ID ${id}`
+            });
+        }
+        const updatedProduct = await Product.findById(id);
+        res.status(200).json(updatedProduct``);
+    } catch (ERROR) {
+        res.status(500).json({
+            message: ERROR.message
+        });
+    }
+});
+
+// Create a new product
 app.post('/products', async (req, res) => {
     try {
         const product = await Product.create(req.body);
