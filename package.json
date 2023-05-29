@@ -2,7 +2,7 @@
   "name": "express-api-with-mongodb",
   "version": "1.0.0",
   "description": "Basic ExpressJS API with MongoDB",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "node server.js",
